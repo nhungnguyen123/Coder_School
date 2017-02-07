@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/activity_main"
     android:layout_width="match_parent"
@@ -7,33 +7,32 @@
     android:layout_margin="5dp"
     android:orientation="vertical"
     android:padding="5dp"
-    android:weightSum="10"
     tools:context="com.uiapp.coder_school.MainActivity">
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/rv_name"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="9"></android.support.v7.widget.RecyclerView>
+        android:layout_height="wrap_content"
+       ></android.support.v7.widget.RecyclerView>
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"
+        android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:weightSum="10">
-
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true">
         <EditText
             android:id="@+id/edt_name"
             android:layout_width="0dp"
             android:padding="10dp"
-            android:layout_height="match_parent"
+            android:layout_height="50dp"
             android:layout_weight="7" />
 
         <Button
             android:id="@+id/btn_addd"
             android:layout_width="0dp"
-            android:layout_height="match_parent"
+            android:layout_height="50dp"
             android:layout_weight="3"
             android:background="@drawable/btn_blue_selector"
             android:text="@string/add_item"
@@ -41,4 +40,4 @@
              />
     </LinearLayout>
 
-</LinearLayout>
+</RelativeLayout>

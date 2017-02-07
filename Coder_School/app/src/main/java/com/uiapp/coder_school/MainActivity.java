@@ -11,6 +11,9 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 
+import com.activeandroid.ActiveAndroid;
+import com.activeandroid.Configuration;
+import com.activeandroid.query.Select;
 import com.google.gson.Gson;
 import com.uiapp.coder_school.adapter.AdapterItem;
 import com.uiapp.coder_school.adapter.OnClickedit;
@@ -38,6 +41,13 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Configuration dbConfiguration = new Configuration.Builder(this)
+                .setDatabaseName("MyDb.db")
+                .addModelClass(ItemName.class)
+
+                .create();
+
+        ActiveAndroid.initialize(dbConfiguration);
         setContentView(R.layout.activity_main);
         rvAdd = (RecyclerView) findViewById(R.id.rv_name);
         mEdtname = (EditText) findViewById(R.id.edt_name);
@@ -45,8 +55,22 @@ public class MainActivity extends AppCompatActivity {
 
         rvAdd.setHasFixedSize(true);
         rvAdd.setLayoutManager(new GridLayoutManager(this, 1));
+
+
+        if (getListItemNameFromDB().size() == 0) {
+            Log.e("chua", "add");
+        } else {
+            for (int i=0 ; i< getListItemNameFromDB().size();i++)
+            {
+                listName.add(getListItemNameFromDB().get(i));
+            }
+            Log.e("Add", "");
+        }
+
         adapterItem = new AdapterItem(listName, this);
         rvAdd.setAdapter(adapterItem);
+
+
         mBtnAdd.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -56,7 +80,10 @@ public class MainActivity extends AppCompatActivity {
                 } else {
                     ItemName itemName = new ItemName();
                     itemName.setName(mEdtname.getText().toString());
+                    itemName.setPosition(getListItemNameFromDB().size());
+                    itemName.save();
                     listName.add(itemName);
+                    Log.e("size", getListItemNameFromDB().size() + "");
                     adapterItem.notifyDataSetChanged();
                     mEdtname.setText("");
                 }
@@ -84,15 +111,19 @@ public class MainActivity extends AppCompatActivity {
     //TODO đã lấy được nguồn về.
     @Subscribe(sticky = true, threadMode = ThreadMode.MAIN)
     public void onSourceEvent(ItemName itemName) {
-//        String json = new Gson().toJson(event);
-//        Log.e("sourceCategory", json.toString() + "");
-//        setUpData();
-//        adapterCategoty.notifyDataSetChanged();
-
         Log.e("Itemchange", itemName.getName() + "");
         for (int i = 0; i < listName.size(); i++) {
             if (i == itemName.getPosition()) {
                 listName.get(i).setName(itemName.getName());
+                Log.e("positionChoose", itemName.getPosition() + "");
+                ItemName page = ItemName.load(ItemName.class, itemName.getPosition() + 1);
+                page.setName(itemName.getName());
+                page.setPosition(itemName.getPosition());
+                for (int k=0;k < getListItemNameFromDB().size();k++)
+                {
+                    Log.e("NameAfterEdt", getListItemNameFromDB().get(k).getName()+"");
+                }
+                page.save();
 
             }
             adapterItem.notifyDataSetChanged();
@@ -110,5 +141,14 @@ public class MainActivity extends AppCompatActivity {
         bus.unregister(this); // un-registering the bus
         super.onStop();
     }
+
+
+    private List<ItemName> getListItemNameFromDB() {
+
+        return new Select()
+                .from(ItemName.class)
+                .execute();
+    }
+
 
 }
