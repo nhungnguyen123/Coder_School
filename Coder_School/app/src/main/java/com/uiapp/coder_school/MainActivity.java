@@ -104,6 +104,23 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(intent);
 
             }
+
+            @Override
+            public void clickDelete(int position, String name) {
+                listName.remove(position);
+
+
+                adapterItem.notifyDataSetChanged();
+
+                ItemName itemName = ItemName.load(ItemName.class,position+1);
+                itemName.delete();
+
+                for (int k=0;k < getListItemNameFromDB().size();k++)
+                {
+                    Log.e("NameAfterDElete", getListItemNameFromDB().get(k).getName()+"");
+                }
+
+            }
         });
 
     }
@@ -119,12 +136,11 @@ public class MainActivity extends AppCompatActivity {
                 ItemName page = ItemName.load(ItemName.class, itemName.getPosition() + 1);
                 page.setName(itemName.getName());
                 page.setPosition(itemName.getPosition());
+                page.save();
                 for (int k=0;k < getListItemNameFromDB().size();k++)
                 {
                     Log.e("NameAfterEdt", getListItemNameFromDB().get(k).getName()+"");
                 }
-                page.save();
-
             }
             adapterItem.notifyDataSetChanged();
         }

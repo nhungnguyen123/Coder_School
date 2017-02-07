@@ -6,4 +6,5 @@ package com.uiapp.coder_school.adapter;
 
 public interface OnClickedit {
     void clickEdit(int position , String name);
+    void clickDelete (int position , String name);
 }

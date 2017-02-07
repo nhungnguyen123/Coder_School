@@ -56,6 +56,14 @@ public class AdapterItem extends RecyclerView.Adapter {
             }
         });
 
+        itemHoler.mTvName.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View view) {
+                onClickedit.clickDelete(position,itemName.getName());
+                return true;
+            }
+        });
+
     }
 
     @Override
